@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Headlines</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">Headlines</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+          <li class="nav-item dropdown"></li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">Disabled</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="root">
+        <div class="row">
+            <div class="container search--form">
+                <form class="form-inline" action="/search" method="GET">
+                    <div class="form-group mb-2 mr-sm-2">
+                        <label for="country" class="sr-only">Country</label>
+                        <select name="country" class="custom-select mr-sm-2" id="country">
+                            <option selected>Choose Country...</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-2 mr-sm-2">
+                        <label for="source" class="sr-only">Source</label>
+                        <select name="source" class="custom-select mr-sm-2" id="source">
+                            <option selected>Choose Source...</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="container">
+            	Conversion Space
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="bundle.js"></script>
+  </body>
+</html>
