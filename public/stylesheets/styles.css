@@ -16,3 +16,35 @@ body {
   font: 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
 }
+
+/*select element*/
+.custom-select {
+  width: 155px !important;
+  padding: .375rem .75rem;
+}
+
+.to--label {
+  width: auto;
+  padding: .375rem .75rem;
+
+}
+
+#input--value {
+  width: 100px !important;
+}
+
+.conversion--container {
+  padding: 5rem 2rem;
+}
+
+.results--container {
+  width: 15rem;
+  margin: 1.5rem auto;
+  padding: 2rem 2rem;
+  text-align: center;
+  border: 2px solid grey;
+}
+
+#submit-btn {
+
+}
