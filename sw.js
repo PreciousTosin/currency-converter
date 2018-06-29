@@ -5,6 +5,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(staticCache)
     .then(cache => cache.addAll([
       '/',
+      '/styles.css',
       '/bundle.js',
     ]))
     .catch(error => console.log(error)));
