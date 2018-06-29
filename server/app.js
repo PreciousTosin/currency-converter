@@ -14,15 +14,13 @@ require('dotenv').config();
 
 const app = express();
 
-app.engine('hbs', hbs.engine);
-app.set('view engine', 'hbs');
-
 let compiler = '';
 let webpackDevMiddleware = '';
 let webpackHotMiddleware = '';
 
 if (process.env.ENV !== 'production') {
   compiler = webpack(config);
+  console.log('COMPILING!!!!!!!!!!!');
 
   // eslint-disable-next-line global-require
   webpackDevMiddleware = require('webpack-dev-middleware')(compiler, {
@@ -59,7 +57,7 @@ if (process.env.ENV !== 'production') {
   app.use(webpackHotMiddleware);
 }
 
-app.use('/', index.router);
+app.use('/', index);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -80,4 +78,3 @@ app.use((err, req, res) => {
 });
 
 module.exports = app;
-
