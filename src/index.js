@@ -181,6 +181,9 @@ function storeSelectData(data) {
   });
 }
 
+/*
+* @dev function to fetch currency data (id, name and symbol from api)
+*/
 function fetchCurrency() {
   return new Promise((resolve, reject) => {
     fetch('https://free.currencyconverterapi.com/api/v5/currencies')
@@ -203,14 +206,41 @@ function fetchCurrency() {
   });
 }
 
-function addEvents() {
+function convert(inputValue, exchRate) {
+  return inputValue * exchRate;
+}
+
+/*
+* @dev function to convert one currency to the other
+*/
+function convertCurrency() {
   const firstCurrencyElem = document.querySelector('#first-currency');
   const secondCurrencyElem = document.querySelector('#second-currency');
-  const firstSelectVal = firstCurrencyElem.options[firstCurrencyElem.selectedIndex].value;
-  const secondSelectVal = secondCurrencyElem.options[secondCurrencyElem.selectedIndex].value;
+  const firstVal = firstCurrencyElem.options[firstCurrencyElem.selectedIndex].value;
+  const secondVal = secondCurrencyElem.options[secondCurrencyElem.selectedIndex].value;
+  const inputVal = document.querySelector('#input--value').value;
+  console.log({ firstVal, secondVal, inputVal });
+  fetch(`https://free.currencyconverterapi.com/api/v5/convert?q=${firstVal}_${secondVal}&compact=ultra`)
+    .then(response => response.json())
+    .then((data) => {
+      const rateData = Object.entries(data);
+      console.log(rateData);
+      const convertedVal = convert(inputVal, rateData[0][1]);
+      const rateValue = rateData[0][1];
+      console.log({ inputVal, rateValue, convertedVal });
+      console.log(convertedVal.toString());
+      document.querySelector('.results--container').innerHTML = convertedVal.toString();
+    })
+    .catch(error => console.log(error));
+}
+
+/*
+* @dev function to add various event handlers
+*/
+function addEvents() {
   document.querySelector('#submit-btn').addEventListener('click', (event) => {
     event.preventDefault();
-    console.log({ firstSelectVal, secondSelectVal });
+    convertCurrency();
   });
 }
 
@@ -220,7 +250,7 @@ $(document).ready(() => {
       if ($.isEmptyObject(obj)) { // if currencyStore doesn't contains currency symbols, names
         fetchCurrency().then((result) => { // send fetch request to api
           fillSelect(result);
-          storeSelectData(result);
+          storeSelectData(result); // store api data in idb
         }).catch(error => console.log(error));
       } else { // if store contains content, fill from idb instead
         fillSelect(obj);
