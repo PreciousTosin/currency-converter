@@ -5,13 +5,12 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Headlines</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Currency-Converter</title>
   </head>
 
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">Headlines</a>
+      <a class="navbar-brand" href="#">Currency-Converter</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -35,20 +34,20 @@
     <div class="root">
         <div class="row">
             <div class="container search--form">
-                <form class="form-inline" action="/search" method="GET">
+                <form class="form-inline">
                     <div class="form-group mb-2 mr-sm-2">
-                        <label for="country" class="sr-only">Country</label>
-                        <select name="country" class="custom-select mr-sm-2" id="country">
-                            <option selected>Choose Country...</option>
+                        <label for="first-currency" class="sr-only">From</label>
+                        <select name="first-currency" class="custom-select mr-sm-2" id="first-currency">
+                            <option selected>Choose Currency...</option>
                         </select>
                     </div>
                     <div class="form-group mb-2 mr-sm-2">
-                        <label for="source" class="sr-only">Source</label>
-                        <select name="source" class="custom-select mr-sm-2" id="source">
-                            <option selected>Choose Source...</option>
+                        <label for="second-currency" class="sr-only">Source</label>
+                        <select name="second-currency" class="custom-select mr-sm-2" id="second-currency">
+                            <option selected>Choose Currency...</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button id="submit-btn" type="submit" class="btn btn-primary">Submit</button>
                 </form>
             </div>
         </div>
@@ -59,6 +58,5 @@
         </div>
     </div>
 
-    <script type="text/javascript" src="bundle.js"></script>
   </body>
 </html>
