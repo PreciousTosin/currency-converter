@@ -4,8 +4,7 @@ const path = require('path');
 
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
@@ -65,7 +64,7 @@ module.exports = {
           ],
         },
       },
-       {
+      {
         test: /\.html$/,
         use: [
           {
@@ -83,16 +82,10 @@ module.exports = {
         use: ['style-loader', 'css-loader'],
       }, */
       {
-        rules: [
-          {
-            test: /\.css$/,
-            use: ExtractTextPlugin.extract({
-              fallback: 'style-loader',
-              use: 'css-loader',
-            }),
-          },
-        ],
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
       },
+
       // loader for images, fonts, file
       {
         test: /\.(jpe?g|png|gif|svg|ttf|eot|woff(2)?)$/,
@@ -108,12 +101,11 @@ module.exports = {
   },
 
   plugins: [
-    new ExtractTextPlugin('styles.css'),
     // Makes the public URL available as %PUBLIC_URL% in index.html, e.g.:
     // <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
     // In development, this will be an empty string.
     // Generates an `index.html` file with the <script> injected.
-     new HtmlWebpackPlugin({
+    new HtmlWebpackPlugin({
       inject: true,
       template: path.join(__dirname, './views/index.html'),
     }),
@@ -123,10 +115,12 @@ module.exports = {
       PRODUCTION: JSON.stringify(false),
     }),
     // This is necessary to emit hot updates (currently CSS only):
-    new webpack.HotModuleReplacementPlugin(),
-    new ServiceWorkerWebpackPlugin({
-      entry: path.join(__dirname, './src/sw/sw.js'),
-    }),
+    // new webpack.HotModuleReplacementPlugin(),
+    // copy files to output folder
+    new CopyWebpackPlugin([
+      { from: 'src/sw/', to: './' },
+    ]),
+
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
