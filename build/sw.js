@@ -4,9 +4,9 @@ const staticCache = 'currency-converter-v1';
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(staticCache)
     .then(cache => cache.addAll([
-      '/',
-      '/styles.css',
-      '/bundle.js',
+      './',
+      './styles.css',
+      './bundle.js',
     ]))
     .catch(error => console.log(error)));
 });
