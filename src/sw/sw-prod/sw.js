@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-const staticCache = 'currency-converter-v1';
+const staticCache = 'currency-converter-v2';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(staticCache)
@@ -21,23 +21,18 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const requestUrl = new URL(event.request.url);
 
-  event.respondWith(caches.match(event.request)
-    .then((request) => {
-      if (request) {
-        console.log(`responding with cache: ${event.request.url}`);
-        return request;
-      }
-      console.log(`file is not cached, fetching: ${event.request.url}`);
-      return fetch(event.request);
-    })
-    .catch(error => console.log(error)));
-
-  /* if (requestUrl.origin === location.origin) {
-    if (requestUrl.pathname === './') {
-      event.respondWith(caches.match(event.request));
-      return;
-    }
-  } */
+  if (requestUrl.origin === location.origin) {
+    event.respondWith(caches.match(event.request)
+      .then((request) => {
+        if (request) {
+          console.log(`responding with cache: ${event.request.url}`);
+          return request;
+        }
+        console.log(`file is not cached, fetching: ${event.request.url}`);
+        return fetch(event.request);
+      })
+      .catch(error => console.log(error)));
+  }
 
   if (requestUrl.origin === location.origin) {
     if (requestUrl.pathname === '/hello') {
