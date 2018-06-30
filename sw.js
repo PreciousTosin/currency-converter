@@ -21,12 +21,23 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const requestUrl = new URL(event.request.url);
 
-  if (requestUrl.origin === location.origin) {
-    if (requestUrl.pathname === '/') {
-      event.respondWith(caches.match('/'));
+  event.respondWith(caches.match(event.request))
+    .then((request) => {
+      if (request) {
+        console.log(`responding with cache: ${event.request.url}`);
+        return request;
+      }
+      console.log(`file is not cached, fetching: ${event.request.url}`);
+      return fetch(event.request);
+    })
+    .catch(error => console.log(error));
+
+  /* if (requestUrl.origin === location.origin) {
+    if (requestUrl.pathname === './') {
+      event.respondWith(caches.match(event.request));
       return;
     }
-  }
+  } */
 
   if (requestUrl.origin === location.origin) {
     if (requestUrl.pathname === '/hello') {
