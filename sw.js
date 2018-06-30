@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-const staticCache = 'currency-converter-v1';
+const staticCache = 'currency-converter-v2';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(staticCache)
