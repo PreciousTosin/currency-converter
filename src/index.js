@@ -1,4 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable import/no-extraneous-dependencies,default-case,no-fallthrough */
 import 'bootstrap';
 import alertify from 'alertifyjs';
 import idb from 'idb';
@@ -93,10 +93,18 @@ function createDatabase() {
   if (!navigator.serviceWorker) {
     return Promise.resolve();
   }
-  return idb.open('currencyapi', 1, (upgradeDb) => {
-    upgradeDb.createObjectStore('currencyStore', {
-      keyPath: 'currencyId',
-    });
+  return idb.open('currencyapi', 2, (upgradeDb) => {
+    // noinspection FallThroughInSwitchStatementJS
+    switch (upgradeDb.oldVersion) {
+      case 0:
+        upgradeDb.createObjectStore('currencyStore', {
+          keyPath: 'currencyId',
+        });
+      case 1:
+        upgradeDb.createObjectStore('ratesStore', {
+          keyPath: 'conversionPair',
+        });
+    }
   });
 }
 
@@ -106,11 +114,18 @@ function idbMethods(dbPromise) {
       return dbPromise().then(db => db.transaction(storeName)
         .objectStore(storeName).get(key));
     },
-    set(data, storeName) {
+    setAll(data, storeName) {
       console.log('STORING DATA IN DATABASE!!!!');
       return dbPromise().then((db) => {
         const tx = db.transaction(storeName, 'readwrite');
         data.forEach(dataItem => tx.objectStore(storeName).put(dataItem));
+        return tx.complete;
+      });
+    },
+    set(data, storeName) {
+      return dbPromise().then((db) => {
+        const tx = db.transaction(storeName, 'readwrite');
+        tx.objectStore(storeName).put(data);
         return tx.complete;
       });
     },
@@ -172,7 +187,7 @@ function fillSelect(data) {
 
 function storeSelectData(data) {
   return new Promise((resolve, reject) => {
-    idbMethods(createDatabase).set(data, 'currencyStore')
+    idbMethods(createDatabase).setAll(data, 'currencyStore')
       .then((isComplete) => {
         console.log('ADDED DATA TO IDB');
         resolve(isComplete);
@@ -210,6 +225,29 @@ function convert(inputValue, exchRate) {
   return inputValue * exchRate;
 }
 
+function storeConversionRate(data) {
+  return new Promise((resolve, reject) => {
+    // idbMethods(createDatabase).delete(data.conversionPair, 'ratesStore').then().catch();
+    idbMethods(createDatabase).set(data, 'ratesStore')
+      .then((isComplete) => {
+        console.log('ADDED RATES DATA TO IDB');
+        resolve(isComplete);
+      })
+      .catch(error => reject(error));
+  });
+}
+
+function getConversionRate({ conversionPair }) {
+  return new Promise((resolve, reject) => {
+    idbMethods(createDatabase).get(conversionPair, 'ratesStore')
+      .then((data) => {
+        console.log('Retrieved rate from IDB', data);
+        resolve(data);
+      })
+      .catch(error => reject(error));
+  });
+}
+
 /*
 * @dev function to convert one currency to the other
 */
@@ -219,7 +257,12 @@ function convertCurrency() {
   const firstVal = firstCurrencyElem.options[firstCurrencyElem.selectedIndex].value;
   const secondVal = secondCurrencyElem.options[secondCurrencyElem.selectedIndex].value;
   const inputVal = document.querySelector('#input--value').value;
+  // const conversionPair =
   console.log({ firstVal, secondVal, inputVal });
+  const rateObj = {
+    conversionPair: `${firstVal}_${secondVal}`,
+    conversionRate: '',
+  };
   fetch(`https://free.currencyconverterapi.com/api/v5/convert?q=${firstVal}_${secondVal}&compact=ultra`)
     .then(response => response.json())
     .then((data) => {
@@ -227,11 +270,29 @@ function convertCurrency() {
       console.log(rateData);
       const convertedVal = convert(inputVal, rateData[0][1]);
       const rateValue = rateData[0][1];
-      console.log({ inputVal, rateValue, convertedVal });
+      rateObj.conversionRate = rateValue;
+      console.log({
+        inputVal, rateValue, convertedVal, rateObj,
+      });
+      storeConversionRate(rateObj); // store current rate in idb
       console.log(convertedVal.toString());
       document.querySelector('.results--container').innerHTML = convertedVal.toString();
     })
-    .catch(error => console.log(error));
+    .catch((error) => {
+      console.log(error); // error results from fetch (poor or no internet)
+
+      getConversionRate(rateObj) // retrieve data from idb
+        .then((data) => {
+          if (data !== undefined) {
+            const converted = convert(inputVal, data.conversionRate);
+            console.log({
+              inputVal, converted, data,
+            }); // then set the retrieved value
+            document.querySelector('.results--container').innerHTML = converted.toString();
+          }
+        })
+        .catch(err => console.log('Unable to retrieve data from cache', err));
+    });
 }
 
 /*
@@ -245,6 +306,7 @@ function addEvents() {
 }
 
 $(document).ready(() => {
+  registerServiceWorker(); // register service worker
   idbMethods(createDatabase).retrieveAll('currencyStore')
     .then((obj) => {
       if ($.isEmptyObject(obj)) { // if currencyStore doesn't contains currency symbols, names
