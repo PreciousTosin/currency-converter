@@ -1,5 +1,4 @@
 /* eslint-disable import/no-extraneous-dependencies */
-// const autoprefixer = require('autoprefixer');
 const path = require('path');
 
 const webpack = require('webpack');
@@ -31,22 +30,7 @@ module.exports = {
     publicPath: '/',
   },
   resolve: {
-    // This allows you to set a fallback for where Webpack should look for modules.
-    // We read `NODE_PATH` environment variable in `paths.js` and pass paths here.
-    // We use `fallback` instead of `root` because we want `node_modules` to "win"
-    // if there any conflicts. This matches Node resolution mechanism.
-    // https://github.com/facebookincubator/create-react-app/issues/253
-    // modules: paths.nodePaths,
-    // These are the reasonable defaults supported by the Node ecosystem.
-    // We also include JSX as a common component filename extension to support
-    // some tools, although we do not recommend using it, see:
-    // https://github.com/facebookincubator/create-react-app/issues/290
     extensions: ['.js', '.json', '.jsx'],
-    alias: {
-      // Support React Native Web
-      // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
-      'react-native': 'react-native-web',
-    },
   },
 
   module: {
@@ -77,10 +61,6 @@ module.exports = {
       // "style" loader turns CSS into JS modules that inject <style> tags.
       // In production, we use a plugin to extract that CSS to a file, but
       // in development "style" loader enables hot editing of CSS.
-      /* {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
-      }, */
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
