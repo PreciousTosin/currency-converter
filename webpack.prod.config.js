@@ -128,8 +128,8 @@ module.exports = {
     // In development, this will be an empty string.
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
-      inject: true,
-      template: path.join(__dirname, './views/index.html'),
+      inject: false,
+      template: path.join(__dirname, './views/prod-html/index.html'),
     }),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `./env.js`.
@@ -140,10 +140,12 @@ module.exports = {
     // new webpack.HotModuleReplacementPlugin(),
     // copy files to output folder
     new CopyWebpackPlugin([
-      { from: 'src/sw/', to: './' },
+      { from: 'src/sw/sw-prod/', to: './' },
     ]),
     // for css files
-    new MiniCssExtractPlugin('styles.css'),
+    new MiniCssExtractPlugin({
+      filename: 'styles.css',
+    }),
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
