@@ -31,6 +31,17 @@ body {
 
 #input--value {
   width: 100px !important;
+  margin: 0 auto;
+}
+
+.conversion--form {
+  display: block;
+  text-align: center;
+}
+
+.form-inline .form-group {
+  display: block;
+  margin-bottom: 1rem;
 }
 
 .conversion--container {
@@ -47,4 +58,17 @@ body {
 
 #submit-btn {
 
+}
+
+@media screen and (min-width: 800px) {
+  .conversion--form {
+    display: flex;
+    text-align: unset;
+    justify-content: center;
+  }
+
+  .form-inline .form-group {
+    display: flex;
+    margin-bottom: 0;
+  }
 }
